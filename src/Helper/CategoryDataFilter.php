@@ -13,7 +13,8 @@ class CategoryDataFilter extends DataFilter
         /** @var Category $category */
         foreach( $categoryList as $category )
         {
-            $categoryData = $category->toArray();
+            //$categoryData = $category->toArray();
+            $categoryData = $category;
             $resultData = null;
 
             if ( is_null( $resultFields ) )

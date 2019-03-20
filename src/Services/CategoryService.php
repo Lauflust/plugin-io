@@ -348,10 +348,15 @@ class CategoryService
             $type = CategoryType::ALL;
         }
 
-        $tree = $this->filterCategoriesByTypes(
+        /*$tree = $this->filterCategoriesByTypes(
             $this->categoryRepository->getLinklistTree(CategoryType::ALL, $lang, $this->webstoreConfig->getWebstoreConfig()->webstoreId, $maxLevel, $customerClassId),
             $type
-        );
+        );*/
+        
+        $tree = $this->filterCategoriesByTypes(
+            $this->categoryRepository->getArrayTree(CategoryType::ALL, $lang, $this->webstoreConfig->getWebstoreConfig()->webstoreId, $maxLevel, $customerClassId, function($category) {
+            return $category['linklist'] == 'Y';
+        }));
 
         /**
          * pluginApp(CategoryDataFilter::class) creates an instance that could be used directly without temporarily
@@ -415,7 +420,7 @@ class CategoryService
 
             function($category) use ($types)
             {
-                return in_array($category->type, $types);
+                return in_array($category['type'], $types);
             }
         );
 
@@ -423,7 +428,7 @@ class CategoryService
             function($category) use ($types)
             {
                 /** @var $category Category */
-                $category->children = $this->filterCategoriesByTypes($category->children, $types);
+                $category['children'] = $this->filterCategoriesByTypes($category['children'], $types);
 
                 return $category;
             },
